@@ -2,11 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
+import 'dart:io';
 
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await MobileAds.instance.initialize();
+
+  if (Platform.isAndroid) {
+    await MobileAds.instance.initialize();
+  }
+
   runApp(const MyApp());
 }
 

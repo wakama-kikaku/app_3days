@@ -45,7 +45,7 @@ class MaterialPageRoute<T> extends PageRoute<T> with MaterialRouteTransitionMixi
     super.traversalEdgeBehavior,
     super.directionalTraversalEdgeBehavior,
   }) {
-    assert(opaque);f
+    assert(opaque);
   }
 
   /// Builds the primary contents of the route.
