@@ -5,6 +5,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'dart:io';
+import 'package:share_plus/share_plus.dart';
 
 
 void main() async {
@@ -167,6 +168,13 @@ class _BouzuHomePageState extends State<BouzuHomePage> {
                           },
                           child: const Text('カレンダーを見る'),
                         ),
+                        const SizedBox(height: 20), 
+                        ElevatedButton(
+                          onPressed: () {
+                            Share.share('目標「$_goal」継続中！Lv.$_level - Day $_day #3日坊主');
+                            },
+                            child: const Text('進捗を共有する'),
+                            ),
                       ] else ...[
                         Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 10),
