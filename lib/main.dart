@@ -6,7 +6,8 @@ import 'package:table_calendar/table_calendar.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'dart:io';
 import 'package:share_plus/share_plus.dart';
-
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'l10n/app_localizations.dart'; // 自動生成されたファイル
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -26,6 +27,16 @@ class MyApp extends StatelessWidget {
     return const MaterialApp(
       debugShowCheckedModeBanner: false,
       home: BouzuHomePage(),
+      localizationsDelegates: [
+        AppLocalizations.delegate,
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
+      supportedLocales: [
+        Locale('en'),
+        Locale('ja'),
+      ],
     );
   }
 }
@@ -100,16 +111,16 @@ class _BouzuHomePageState extends State<BouzuHomePage> {
     final confirm = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('確認'),
-        content: const Text('本当にリセットしますか？'),
+        title: Text(AppLocalizations.of(context)!.confirmTitle),
+        content: Text(AppLocalizations.of(context)!.confirmReset),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context, false),
-            child: const Text('キャンセル'),
+            child: Text(AppLocalizations.of(context)!.cancel),
           ),
           TextButton(
             onPressed: () => Navigator.pop(context, true),
-            child: const Text('リセットする'),
+            child: Text(AppLocalizations.of(context)!.doReset),
           ),
         ],
       ),
@@ -130,8 +141,9 @@ class _BouzuHomePageState extends State<BouzuHomePage> {
 
   @override
   Widget build(BuildContext context) {
+    final loc = AppLocalizations.of(context)!;
     return Scaffold(
-      appBar: AppBar(title: const Text('3日坊主')),
+      appBar: AppBar(title: Text(loc.appTitle)),
       body: Column(
         children: [
           Expanded(
@@ -143,18 +155,18 @@ class _BouzuHomePageState extends State<BouzuHomePage> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       if (_goal.isNotEmpty) ...[
-                        Text('目標: $_goal', style: const TextStyle(fontSize: 24)),
+                        Text(loc.yourGoal(_goal), style: const TextStyle(fontSize: 24)),
                         const SizedBox(height: 20),
                         Image.asset(
                           _level >= 2 ? 'assets/images/bouzu_lv2.png' : 'assets/images/bouzu_lv1.png',
                           height: 200,
                         ),
                         const SizedBox(height: 20),
-                        Text('Lv. $_level - Day $_day', style: const TextStyle(fontSize: 24)),
+                        Text(loc.levelAndDay(_level, _day), style: const TextStyle(fontSize: 24)),
                         const SizedBox(height: 20),
                         ElevatedButton(
                           onPressed: _continue,
-                          child: const Text('今日も続けた！'),
+                          child: Text(loc.todayDone),
                         ),
                         const SizedBox(height: 20),
                         ElevatedButton(
@@ -166,30 +178,30 @@ class _BouzuHomePageState extends State<BouzuHomePage> {
                               ),
                             );
                           },
-                          child: const Text('カレンダーを見る'),
+                          child: Text(loc.seeCalendar),
                         ),
-                        const SizedBox(height: 20), 
+                        const SizedBox(height: 20),
                         ElevatedButton(
                           onPressed: () {
-                            Share.share('目標「$_goal」継続中！Lv.$_level - Day $_day #3日坊主');
-                            },
-                            child: const Text('進捗を共有する'),
-                            ),
+                            Share.share(loc.shareProgress(_goal, _level, _day));
+                          },
+                          child: Text(loc.shareProgressButton),
+                        ),
                       ] else ...[
                         Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 10),
                           child: TextField(
                             controller: _controller,
-                            decoration: const InputDecoration(
-                              hintText: '目標を入力してください',
-                              border: OutlineInputBorder(),
+                            decoration: InputDecoration(
+                              hintText: loc.goalHint,
+                              border: const OutlineInputBorder(),
                             ),
                           ),
                         ),
                         const SizedBox(height: 10),
                         ElevatedButton(
                           onPressed: _setGoal,
-                          child: const Text('目標を掲げる'),
+                          child: Text(loc.setGoal),
                         ),
                       ],
                     ],
@@ -205,7 +217,7 @@ class _BouzuHomePageState extends State<BouzuHomePage> {
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.red[200],
               ),
-              child: const Text('リセット'),
+              child: Text(loc.reset),
             ),
           ),
         ],
@@ -220,10 +232,11 @@ class CalendarPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final loc = AppLocalizations.of(context)!;
     final markedDates = continuedDates.map((e) => DateTime.parse(e)).toSet();
 
     return Scaffold(
-      appBar: AppBar(title: const Text('カレンダー')),
+      appBar: AppBar(title: Text(loc.calendarTitle)),
       body: Padding(
         padding: const EdgeInsets.all(8.0),
         child: TableCalendar(

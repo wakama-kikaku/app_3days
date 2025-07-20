@@ -1,287 +1,272 @@
-// Copyright 2014 The Flutter Authors. All rights reserved.
-// Use of this source code is governed by a BSD-style license that can be
-// found in the LICENSE file.
+// ver 0.0.1 
 
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:table_calendar/table_calendar.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
+import 'dart:io';
+import 'package:share_plus/share_plus.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'l10n/app_localizations.dart'; // 自動生成されたファイル
 
-import 'page_transitions_theme.dart';
-import 'theme.dart';
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
 
-/// A modal route that replaces the entire screen with a platform-adaptive
-/// transition.
-///
-/// {@macro flutter.material.materialRouteTransitionMixin}
-///
-/// By default, when a modal route is replaced by another, the previous route
-/// remains in memory. To free all the resources when this is not necessary, set
-/// [maintainState] to false.
-///
-/// The `fullscreenDialog` property specifies whether the incoming route is a
-/// fullscreen modal dialog. On iOS, those routes animate from the bottom to the
-/// top rather than horizontally.
-///
-/// If `barrierDismissible` is true, then pressing the escape key on the keyboard
-/// will cause the current route to be popped with null as the value.
-///
-/// The type `T` specifies the return type of the route which can be supplied as
-/// the route is popped from the stack via [Navigator.pop] by providing the
-/// optional `result` argument.
-///
-/// See also:
-///
-///  * [MaterialRouteTransitionMixin], which provides the material transition
-///    for this route.
-///  * [MaterialPage], which is a [Page] of this class.
-class MaterialPageRoute<T> extends PageRoute<T> with MaterialRouteTransitionMixin<T> {
-  /// Construct a MaterialPageRoute whose contents are defined by [builder].
-  MaterialPageRoute({
-    required this.builder,
-    super.settings,
-    super.requestFocus,
-    this.maintainState = true,
-    super.fullscreenDialog,
-    super.allowSnapshotting = true,
-    super.barrierDismissible = false,
-    super.traversalEdgeBehavior,
-    super.directionalTraversalEdgeBehavior,
-  }) {
-    assert(opaque);
+  if (Platform.isAndroid) {
+    await MobileAds.instance.initialize();
   }
 
-  /// Builds the primary contents of the route.
-  final WidgetBuilder builder;
-
-  @override
-  Widget buildContent(BuildContext context) => builder(context);
-
-  @override
-  final bool maintainState;
-
-  @override
-  String get debugLabel => '${super.debugLabel}(${settings.name})';
+  runApp(const MyApp());
 }
 
-/// A mixin that provides platform-adaptive transitions for a [PageRoute].
-///
-/// {@template flutter.material.materialRouteTransitionMixin}
-/// For Android, the entrance transition for the page zooms in and fades in
-/// while the exiting page zooms out and fades out. The exit transition is similar,
-/// but in reverse.
-///
-/// For iOS, the page slides in from the right and exits in reverse. The page
-/// also shifts to the left in parallax when another page enters to cover it.
-/// (These directions are flipped in environments with a right-to-left reading
-/// direction.)
-/// {@endtemplate}
-///
-/// See also:
-///
-///  * [PageTransitionsTheme], which defines the default page transitions used
-///    by the [MaterialRouteTransitionMixin.buildTransitions].
-///  * [ZoomPageTransitionsBuilder], which is the default page transition used
-///    by the [PageTransitionsTheme].
-///  * [CupertinoPageTransitionsBuilder], which is the default page transition
-///    for iOS and macOS.
-mixin MaterialRouteTransitionMixin<T> on PageRoute<T> {
-  /// Builds the primary contents of the route.
-  @protected
-  Widget buildContent(BuildContext context);
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
 
   @override
-  Duration get transitionDuration =>
-      _getPageTransitionBuilder(navigator!.context)?.transitionDuration ??
-      const Duration(microseconds: 300);
-
-  @override
-  Duration get reverseTransitionDuration =>
-      _getPageTransitionBuilder(navigator!.context)?.reverseTransitionDuration ??
-      const Duration(microseconds: 300);
-
-  PageTransitionsBuilder? _getPageTransitionBuilder(BuildContext context) {
-    final TargetPlatform platform = Theme.of(context).platform;
-    final PageTransitionsTheme pageTransitionsTheme = Theme.of(context).pageTransitionsTheme;
-    return pageTransitionsTheme.builders[platform] ??
-        switch (platform) {
-          TargetPlatform.iOS || TargetPlatform.macOS => const CupertinoPageTransitionsBuilder(),
-          TargetPlatform.android ||
-          TargetPlatform.fuchsia ||
-          TargetPlatform.windows ||
-          TargetPlatform.linux => const ZoomPageTransitionsBuilder(),
-        };
-  }
-
-  // The transitionDuration is used to create the AnimationController which is only
-  // built once, so when page transition builder is updated and transitionDuration
-  // has a new value, the AnimationController cannot be updated automatically. So we
-  // manually update its duration here.
-  // TODO(quncCccccc): Clean up this override method when controller can be updated as the transitionDuration is changed.
-  @override
-  TickerFuture didPush() {
-    controller?.duration = transitionDuration;
-    return super.didPush();
-  }
-
-  // The reverseTransitionDuration is used to create the AnimationController
-  // which is only built once, so when page transition builder is updated and
-  // reverseTransitionDuration has a new value, the AnimationController cannot
-  // be updated automatically. So we manually update its reverseDuration here.
-  // TODO(quncCccccc): Clean up this override method when controller can beupdated as the reverseTransitionDuration is changed.
-  @override
-  bool didPop(T? result) {
-    controller?.reverseDuration = reverseTransitionDuration;
-    return super.didPop(result);
-  }
-
-  @override
-  Color? get barrierColor => null;
-
-  @override
-  String? get barrierLabel => null;
-
-  @override
-  DelegatedTransitionBuilder? get delegatedTransition => _delegatedTransition;
-
-  static Widget? _delegatedTransition(
-    BuildContext context,
-    Animation<double> animation,
-    Animation<double> secondaryAnimation,
-    bool allowSnapshotting,
-    Widget? child,
-  ) {
-    final PageTransitionsTheme theme = Theme.of(context).pageTransitionsTheme;
-    final TargetPlatform platform = Theme.of(context).platform;
-    final DelegatedTransitionBuilder? themeDelegatedTransition = theme.delegatedTransition(
-      platform,
+  Widget build(BuildContext context) {
+    return const MaterialApp(
+      debugShowCheckedModeBanner: false,
+      home: BouzuHomePage(),
+      localizationsDelegates: [
+        AppLocalizations.delegate,
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
+      supportedLocales: [
+        Locale('en'),
+        Locale('ja'),
+      ],
     );
-    return themeDelegatedTransition != null
-        ? themeDelegatedTransition(context, animation, secondaryAnimation, allowSnapshotting, child)
-        : null;
-  }
-
-  @override
-  bool canTransitionTo(TransitionRoute<dynamic> nextRoute) {
-    // Don't perform outgoing animation if the next route is a fullscreen dialog,
-    // or there is no matching transition to use.
-    // Don't perform outgoing animation if the next route is a fullscreen dialog.
-    final bool nextRouteIsNotFullscreen =
-        (nextRoute is! PageRoute<T>) || !nextRoute.fullscreenDialog;
-
-    // If the next route has a delegated transition, then this route is able to
-    // use that delegated transition to smoothly sync with the next route's
-    // transition.
-    final bool nextRouteHasDelegatedTransition =
-        nextRoute is ModalRoute<T> && nextRoute.delegatedTransition != null;
-
-    // Otherwise if the next route has the same route transition mixin as this
-    // one, then this route will already be synced with its transition.
-    return nextRouteIsNotFullscreen &&
-        ((nextRoute is MaterialRouteTransitionMixin) || nextRouteHasDelegatedTransition);
-  }
-
-  @override
-  bool canTransitionFrom(TransitionRoute<dynamic> previousRoute) {
-    // Supress previous route from transitioning if this is a fullscreenDialog route.
-    return previousRoute is PageRoute && !fullscreenDialog;
-  }
-
-  @override
-  Widget buildPage(
-    BuildContext context,
-    Animation<double> animation,
-    Animation<double> secondaryAnimation,
-  ) {
-    final Widget result = buildContent(context);
-    return Semantics(scopesRoute: true, explicitChildNodes: true, child: result);
-  }
-
-  @override
-  Widget buildTransitions(
-    BuildContext context,
-    Animation<double> animation,
-    Animation<double> secondaryAnimation,
-    Widget child,
-  ) {
-    final PageTransitionsTheme theme = Theme.of(context).pageTransitionsTheme;
-    return theme.buildTransitions<T>(this, context, animation, secondaryAnimation, child);
   }
 }
 
-/// A page that creates a material style [PageRoute].
-///
-/// {@macro flutter.material.materialRouteTransitionMixin}
-///
-/// By default, when the created route is replaced by another, the previous
-/// route remains in memory. To free all the resources when this is not
-/// necessary, set [maintainState] to false.
-///
-/// The `fullscreenDialog` property specifies whether the created route is a
-/// fullscreen modal dialog. On iOS, those routes animate from the bottom to the
-/// top rather than horizontally.
-///
-/// The type `T` specifies the return type of the route which can be supplied as
-/// the route is popped from the stack via [Navigator.transitionDelegate] by
-/// providing the optional `result` argument to the
-/// [RouteTransitionRecord.markForPop] in the [TransitionDelegate.resolve].
-///
-/// See also:
-///
-///  * [MaterialPageRoute], which is the [PageRoute] version of this class
-class MaterialPage<T> extends Page<T> {
-  /// Creates a material page.
-  const MaterialPage({
-    required this.child,
-    this.maintainState = true,
-    this.fullscreenDialog = false,
-    this.allowSnapshotting = true,
-    super.key,
-    super.canPop,
-    super.onPopInvoked,
-    super.name,
-    super.arguments,
-    super.restorationId,
-  });
-
-  /// The content to be shown in the [Route] created by this page.
-  final Widget child;
-
-  /// {@macro flutter.widgets.ModalRoute.maintainState}
-  final bool maintainState;
-
-  /// {@macro flutter.widgets.PageRoute.fullscreenDialog}
-  final bool fullscreenDialog;
-
-  /// {@macro flutter.widgets.TransitionRoute.allowSnapshotting}
-  final bool allowSnapshotting;
+class BouzuHomePage extends StatefulWidget {
+  const BouzuHomePage({super.key});
 
   @override
-  Route<T> createRoute(BuildContext context) {
-    return _PageBasedMaterialPageRoute<T>(page: this, allowSnapshotting: allowSnapshotting);
+  State<BouzuHomePage> createState() => _BouzuHomePageState();
+}
+
+class _BouzuHomePageState extends State<BouzuHomePage> {
+  final TextEditingController _controller = TextEditingController();
+  String _goal = '';
+  int _level = 1;
+  int _day = 1;
+  List<String> _continuedDates = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _loadData();
+  }
+
+  Future<void> _loadData() async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      _goal = prefs.getString('goal') ?? '';
+      _level = prefs.getInt('level') ?? 1;
+      _day = prefs.getInt('day') ?? 1;
+      _continuedDates = prefs.getStringList('continuedDates') ?? [];
+    });
+  }
+
+  Future<void> _saveData() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('goal', _goal);
+    await prefs.setInt('level', _level);
+    await prefs.setInt('day', _day);
+    await prefs.setStringList('continuedDates', _continuedDates);
+  }
+
+  void _setGoal() {
+    setState(() {
+      _goal = _controller.text;
+      _level = 1;
+      _day = 1;
+      _continuedDates = [];
+    });
+    _saveData();
+  }
+
+  void _continue() {
+    setState(() {
+      if (_day < 3) {
+        _day++;
+      } else {
+        _level++;
+        _day = 1;
+      }
+
+      final today = DateTime.now();
+      final todayStr = "${today.year}-${today.month.toString().padLeft(2, '0')}-${today.day.toString().padLeft(2, '0')}";
+      if (!_continuedDates.contains(todayStr)) {
+        _continuedDates.add(todayStr);
+      }
+    });
+    _saveData();
+  }
+
+  Future<void> _reset() async {
+    final confirm = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(AppLocalizations.of(context)!.confirmTitle),
+        content: Text(AppLocalizations.of(context)!.confirmReset),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: Text(AppLocalizations.of(context)!.cancel),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(context, true),
+            child: Text(AppLocalizations.of(context)!.doReset),
+          ),
+        ],
+      ),
+    );
+
+    if (confirm == true) {
+      setState(() {
+        _goal = '';
+        _level = 1;
+        _day = 1;
+        _continuedDates = [];
+        _controller.clear();
+      });
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.clear();
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final loc = AppLocalizations.of(context)!;
+    return Scaffold(
+      appBar: AppBar(title: Text(loc.appTitle)),
+      body: Column(
+        children: [
+          Expanded(
+            child: SingleChildScrollView(
+              child: Center(
+                child: Padding(
+                  padding: const EdgeInsets.all(24),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      if (_goal.isNotEmpty) ...[
+                        Text(loc.yourGoal(_goal), style: const TextStyle(fontSize: 24)),
+                        const SizedBox(height: 20),
+                        Image.asset(
+                          _level >= 2 ? 'assets/images/bouzu_lv2.png' : 'assets/images/bouzu_lv1.png',
+                          height: 200,
+                        ),
+                        const SizedBox(height: 20),
+                        Text(loc.levelAndDay(_level, _day), style: const TextStyle(fontSize: 24)),
+                        const SizedBox(height: 20),
+                        ElevatedButton(
+                          onPressed: _continue,
+                          child: Text(loc.todayDone),
+                        ),
+                        const SizedBox(height: 20),
+                        ElevatedButton(
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => CalendarPage(continuedDates: _continuedDates),
+                              ),
+                            );
+                          },
+                          child: Text(loc.seeCalendar),
+                        ),
+                        const SizedBox(height: 20),
+                        ElevatedButton(
+                          onPressed: () {
+                            Share.share(loc.shareProgress(_goal, _level, _day));
+                          },
+                          child: Text(loc.shareProgressButton),
+                        ),
+                      ] else ...[
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 10),
+                          child: TextField(
+                            controller: _controller,
+                            decoration: InputDecoration(
+                              hintText: loc.goalHint,
+                              border: const OutlineInputBorder(),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 10),
+                        ElevatedButton(
+                          onPressed: _setGoal,
+                          child: Text(loc.setGoal),
+                        ),
+                      ],
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(24),
+            child: ElevatedButton(
+              onPressed: _reset,
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.red[200],
+              ),
+              child: Text(loc.reset),
+            ),
+          ),
+        ],
+      ),
+    );
   }
 }
 
-// A page-based version of MaterialPageRoute.
-//
-// This route uses the builder from the page to build its content. This ensures
-// the content is up to date after page updates.
-class _PageBasedMaterialPageRoute<T> extends PageRoute<T> with MaterialRouteTransitionMixin<T> {
-  _PageBasedMaterialPageRoute({required MaterialPage<T> page, super.allowSnapshotting})
-    : super(settings: page) {
-    assert(opaque);
+class CalendarPage extends StatelessWidget {
+  final List<String> continuedDates;
+  const CalendarPage({super.key, required this.continuedDates});
+
+  @override
+  Widget build(BuildContext context) {
+    final loc = AppLocalizations.of(context)!;
+    final markedDates = continuedDates.map((e) => DateTime.parse(e)).toSet();
+
+    return Scaffold(
+      appBar: AppBar(title: Text(loc.calendarTitle)),
+      body: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: TableCalendar(
+          firstDay: DateTime.utc(2020, 1, 1),
+          lastDay: DateTime.utc(2030, 12, 31),
+          focusedDay: DateTime.now(),
+          calendarStyle: const CalendarStyle(
+            todayDecoration: BoxDecoration(
+              color: Colors.blueAccent,
+              shape: BoxShape.circle,
+            ),
+            selectedDecoration: BoxDecoration(
+              color: Colors.orange,
+              shape: BoxShape.circle,
+            ),
+          ),
+          calendarBuilders: CalendarBuilders(
+            markerBuilder: (context, date, events) {
+              if (markedDates.contains(DateTime(date.year, date.month, date.day))) {
+                return const Center(
+                  child: Icon(Icons.check_circle, size: 16, color: Colors.green),
+                );
+              }
+              return null;
+            },
+          ),
+          selectedDayPredicate: (day) => false,
+          onDaySelected: (selectedDay, focusedDay) {},
+        ),
+      ),
+    );
   }
-
-  MaterialPage<T> get _page => settings as MaterialPage<T>;
-
-  @override
-  Widget buildContent(BuildContext context) {
-    return _page.child;
-  }
-
-  @override
-  bool get maintainState => _page.maintainState;
-
-  @override
-  bool get fullscreenDialog => _page.fullscreenDialog;
-
-  @override
-  String get debugLabel => '${super.debugLabel}(${_page.name})';
 }
