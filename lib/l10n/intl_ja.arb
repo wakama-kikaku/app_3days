@@ -18,7 +18,7 @@
   "confirmReset": "本当にリセットしますか？",
   "doReset": "リセットする",
   "yourGoal": "目標: {goal}",
-  "levelAndDay": "Lv. {level} - Day {day}",
+  "levelAndDay": "Lv {level} - Day {day}",
   "todayDone": "今日も続けた！",
   "seeCalendar": "カレンダーを見る",
   "shareProgressButton": "進捗を共有する",

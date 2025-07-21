@@ -69,6 +69,7 @@ class _BouzuHomePageState extends State<BouzuHomePage> {
       _day = prefs.getInt('day') ?? 1;
       _continuedDates = prefs.getStringList('continuedDates') ?? [];
     });
+    debugPrint('ロードされた: Lv $_level, Day $_day');
   }
 
   Future<void> _saveData() async {
@@ -94,9 +95,11 @@ class _BouzuHomePageState extends State<BouzuHomePage> {
       if (_day < 3) {
         _day++;
       } else {
-        _level++;
         _day = 1;
+        _level++;  
       }
+
+      debugPrint('続けた: Lv $_level, Day $_day');
 
       final today = DateTime.now();
       final todayStr = "${today.year}-${today.month.toString().padLeft(2, '0')}-${today.day.toString().padLeft(2, '0')}";

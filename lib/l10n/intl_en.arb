@@ -18,7 +18,7 @@
   "confirmReset": "Are you sure you want to reset?",
   "doReset": "Reset",
   "yourGoal": "Goal: {goal}",
-  "levelAndDay": "Lv. {level} - Day {day}",
+  "levelAndDay": "Lv {level} - Day {day}",
   "todayDone": "Continued today!",
   "seeCalendar": "View Calendar",
   "shareProgressButton": "Share Progress",
