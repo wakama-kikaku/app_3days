@@ -19,6 +19,12 @@
   "doReset": "Reset",
   "yourGoal": "Goal: {goal}",
   "levelAndDay": "Lv {level} - Day {day}",
+   "@levelAndDay": {
+    "placeholders": {
+      "level": {},
+      "day": {}
+    }
+  },
   "todayDone": "Continued today!",
   "seeCalendar": "View Calendar",
   "shareProgressButton": "Share Progress",

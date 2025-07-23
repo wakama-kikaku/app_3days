@@ -210,7 +210,7 @@ abstract class AppLocalizations {
   ///
   /// In en, this message translates to:
   /// **'Lv {level} - Day {day}'**
-  String levelAndDay(Object day, Object level);
+  String levelAndDay(Object level, Object day);
 
   /// No description provided for @todayDone.
   ///

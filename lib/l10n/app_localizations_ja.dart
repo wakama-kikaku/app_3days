@@ -67,7 +67,7 @@ class AppLocalizationsJa extends AppLocalizations {
   }
 
   @override
-  String levelAndDay(Object day, Object level) {
+  String levelAndDay(Object level, Object day) {
     return 'Lv $level - Day $day';
   }
 
