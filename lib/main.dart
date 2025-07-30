@@ -62,22 +62,23 @@ class _BouzuHomePageState extends State<BouzuHomePage> {
   }
 
   Future<void> _loadData() async {
-    final prefs = await SharedPreferences.getInstance();
-    setState(() {
-      _goal = prefs.getString('goal') ?? '';
-      _level = prefs.getInt('level') ?? 1;
-      _day = prefs.getInt('day') ?? 1;
-      _continuedDates = prefs.getStringList('continuedDates') ?? [];
+  final prefs = await SharedPreferences.getInstance();
+  setState(() {
+    _goal = prefs.getString('goal') ?? '';
+    _level = prefs.getInt('level') ?? 1;
+    _day = prefs.getInt('day') ?? 1;
+    _continuedDates = prefs.getStringList('dates') ?? []; // ← keyを確認！
     });
-    debugPrint('ロードされた: Lv $_level, Day $_day');
+  debugPrint('ロードされた: Lv $_level, Day $_day');
   }
+
 
   Future<void> _saveData() async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString('goal', _goal);
     await prefs.setInt('level', _level);
     await prefs.setInt('day', _day);
-    await prefs.setStringList('continuedDates', _continuedDates);
+    await prefs.setStringList('dates', _continuedDates.toList());
   }
 
   void _setGoal() {
