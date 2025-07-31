@@ -30,5 +30,4 @@ flutter:
   generate: true
 
   assets:
-    - assets/images/bouzu_lv1.png
-    - assets/images/bouzu_lv2.png
+    - assets/images/

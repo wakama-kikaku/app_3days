@@ -162,7 +162,7 @@ class _BouzuHomePageState extends State<BouzuHomePage> {
                         Text(loc.yourGoal(_goal), style: const TextStyle(fontSize: 24)),
                         const SizedBox(height: 20),
                         Image.asset(
-                          _level >= 2 ? 'assets/images/bouzu_lv2.png' : 'assets/images/bouzu_lv1.png',
+                          'assets/images/Lv$_level.png',
                           height: 200,
                         ),
                         const SizedBox(height: 20),
