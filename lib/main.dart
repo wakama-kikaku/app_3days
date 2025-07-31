@@ -54,6 +54,7 @@ class _BouzuHomePageState extends State<BouzuHomePage> {
   int _level = 1;
   int _day = 1;
   List<String> _continuedDates = [];
+  DateTime? _lastPressedDate; 
 
   @override
   void initState() {
@@ -79,6 +80,7 @@ class _BouzuHomePageState extends State<BouzuHomePage> {
     await prefs.setInt('level', _level);
     await prefs.setInt('day', _day);
     await prefs.setStringList('dates', _continuedDates.toList());
+    await prefs.setString('lastPressedDate', _lastPressedDate?.toIso8601String() ?? '');
   }
 
   void _setGoal() {
@@ -92,26 +94,52 @@ class _BouzuHomePageState extends State<BouzuHomePage> {
   }
 
   void _continue() {
-    setState(() {
-      if (_day < 3) {
-        _day++;
-      } else {
-        _day = 1;
-        _level++;  
-      }
+  final now = DateTime.now();
+  final today = DateTime(now.year, now.month, now.day);
 
-      debugPrint('続けた: Lv $_level, Day $_day');
+  // 同じ日に2回押せないようにする
+  if (_lastPressedDate != null) {
+    final lastDate = DateTime(
+        _lastPressedDate!.year, _lastPressedDate!.month, _lastPressedDate!.day);
 
-      final today = DateTime.now();
-      final todayStr = "${today.year}-${today.month.toString().padLeft(2, '0')}-${today.day.toString().padLeft(2, '0')}";
-      if (!_continuedDates.contains(todayStr)) {
-        _continuedDates.add(todayStr);
-      }
-    });
-    _saveData();
+    if (lastDate == today) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(AppLocalizations.of(context)!.alreadyPressedToday)),
+      );
+      return;
+    }
+
+    if (today.difference(lastDate).inDays > 1) {
+      _reset(auto: true); // 念のためここでも1日空きチェック
+      return;
+    }
   }
 
-  Future<void> _reset() async {
+  setState(() {
+    if (_day < 3) {
+      _day++;
+    } else {
+      _day = 1;
+      _level++;
+    }
+
+    debugPrint('続けた: Lv $_level, Day $_day');
+
+    final todayStr =
+        "${today.year}-${today.month.toString().padLeft(2, '0')}-${today.day.toString().padLeft(2, '0')}";
+    if (!_continuedDates.contains(todayStr)) {
+      _continuedDates.add(todayStr);
+    }
+
+    _lastPressedDate = today; // ← ここで更新！
+  });
+
+  _saveData();
+  }
+
+
+  Future<void> _reset({bool auto = false}) async {
+  if (!auto) {
     final confirm = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
@@ -130,18 +158,27 @@ class _BouzuHomePageState extends State<BouzuHomePage> {
       ),
     );
 
-    if (confirm == true) {
-      setState(() {
-        _goal = '';
-        _level = 1;
-        _day = 1;
-        _continuedDates = [];
-        _controller.clear();
-      });
-      final prefs = await SharedPreferences.getInstance();
-      await prefs.clear();
-    }
+    if (confirm != true) return;
   }
+
+  setState(() {
+    _goal = '';
+    _level = 1;
+    _day = 1;
+    _continuedDates = [];
+    _controller.clear();
+    _lastPressedDate = null; // ここも忘れずリセット
+  });
+
+  final prefs = await SharedPreferences.getInstance();
+  await prefs.clear();
+
+  if (auto) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(AppLocalizations.of(context)!.autoResetMessage)),
+    );
+  }
+}
 
   @override
   Widget build(BuildContext context) {

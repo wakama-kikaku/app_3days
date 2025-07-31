@@ -93,4 +93,11 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get reset => 'Reset';
+
+  @override
+  String get autoResetMessage => 'Progress has been reset due to a missed day.';
+
+  @override
+  String get alreadyPressedToday =>
+      'You\'ve already logged your progress today!';
 }

@@ -31,5 +31,8 @@
   "shareProgress": "Continuing goal \"{goal}\"! Lv.{level} - Day {day} #3DayMonk",
   "goalHint": "Enter your goal",
   "setGoal": "Set Goal",
-  "reset": "Reset"
+  "reset": "Reset",
+  "autoResetMessage": "Progress has been reset due to a missed day.",
+   "alreadyPressedToday": "You've already logged your progress today!",
+  "autoResetMessage": "Progress has been reset due to a missed day."
 }

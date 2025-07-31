@@ -253,6 +253,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Reset'**
   String get reset;
+
+  /// No description provided for @autoResetMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Progress has been reset due to a missed day.'**
+  String get autoResetMessage;
+
+  /// No description provided for @alreadyPressedToday.
+  ///
+  /// In en, this message translates to:
+  /// **'You\'ve already logged your progress today!'**
+  String get alreadyPressedToday;
 }
 
 class _AppLocalizationsDelegate

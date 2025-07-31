@@ -93,4 +93,10 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get reset => 'リセット';
+
+  @override
+  String get autoResetMessage => '1日空いたためリセットされました';
+
+  @override
+  String get alreadyPressedToday => '今日はすでに記録済みです！';
 }

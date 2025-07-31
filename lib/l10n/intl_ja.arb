@@ -31,5 +31,8 @@
   "shareProgress": "目標「{goal}」継続中！Lv.{level} - Day {day} #3日坊主",
   "goalHint": "目標を入力してください",
   "setGoal": "目標を掲げる",
-  "reset": "リセット"
+  "reset": "リセット",
+  "autoResetMessage": "1日空いたためリセットされました",
+  "alreadyPressedToday": "今日はすでに記録済みです！"
+
 }
