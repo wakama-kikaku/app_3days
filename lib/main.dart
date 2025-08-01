@@ -69,8 +69,12 @@ class _BouzuHomePageState extends State<BouzuHomePage> {
     _level = prefs.getInt('level') ?? 1;
     _day = prefs.getInt('day') ?? 1;
     _continuedDates = prefs.getStringList('dates') ?? []; // ← keyを確認！
-    });
-  debugPrint('ロードされた: Lv $_level, Day $_day');
+    final lastDateStr = prefs.getString('lastPressedDate');
+    if (lastDateStr != null) {
+      _lastPressedDate = DateTime.tryParse(lastDateStr);
+    }
+  });
+  debugPrint('ロードされた: Lv $_level, Day $_day,最終達成日 $_lastPressedDate');
   }
 
 
