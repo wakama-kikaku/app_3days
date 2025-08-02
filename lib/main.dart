@@ -55,12 +55,37 @@ class _BouzuHomePageState extends State<BouzuHomePage> {
   int _day = 1;
   List<String> _continuedDates = [];
   DateTime? _lastPressedDate; 
+  late BannerAd _bannerAd;
+  bool _isBannerReady = false;
+
 
   @override
   void initState() {
     super.initState();
     _loadData();
+    _initBannerAd();
   }
+
+  void _initBannerAd() {
+    _bannerAd = BannerAd(
+      adUnitId: 'ca-app-pub-3940256099942544/6300978111', // ← テスト用（本番は差し替え）
+      request: const AdRequest(),
+      size: AdSize.banner,
+      listener: BannerAdListener(
+        onAdLoaded: (_) {
+          setState(() {
+            _isBannerReady = true;
+          });
+          debugPrint('✅ Ad loaded');
+        },
+        onAdFailedToLoad: (ad, error) {
+          ad.dispose();
+          debugPrint('❌ Ad failed to load: ${error.code} - ${error.message}');
+       },
+     ),
+   )..load();
+ }
+
 
   Future<void> _loadData() async {
   final prefs = await SharedPreferences.getInstance();
@@ -267,6 +292,13 @@ class _BouzuHomePageState extends State<BouzuHomePage> {
           ),
         ],
       ),
+    bottomNavigationBar: _isBannerReady
+      ? SizedBox(
+          height: _bannerAd.size.height.toDouble(),
+          width: _bannerAd.size.width.toDouble(),
+          child: AdWidget(ad: _bannerAd),
+        )
+      : const SizedBox.shrink(),
     );
   }
 }
