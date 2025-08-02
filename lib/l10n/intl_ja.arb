@@ -4,7 +4,7 @@
   "goalLabel": "目標",
   "continueButton": "今日も続けた！",
   "calendarButton": "カレンダーを見る",
-  "shareButton": "進捗を共有する",
+  "shareButton": "SNSで共有する",
   "shareMessage": "目標「{goal}」継続中！Lv.{level} - Day {day} #3日坊主",
   "setGoalPlaceholder": "目標を入力してください",
   "setGoalButton": "目標を掲げる",

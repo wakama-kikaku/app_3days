@@ -8,6 +8,12 @@ import 'dart:io';
 import 'package:share_plus/share_plus.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'l10n/app_localizations.dart'; // 自動生成されたファイル
+import 'dart:io';
+import 'package:flutter/services.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:share_plus/share_plus.dart';
+
+
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -111,6 +117,31 @@ class _BouzuHomePageState extends State<BouzuHomePage> {
     await prefs.setStringList('dates', _continuedDates.toList());
     await prefs.setString('lastPressedDate', _lastPressedDate?.toIso8601String() ?? '');
   }
+
+  Future<void> _shareImageWithText() async {
+    final loc = AppLocalizations.of(context)!;
+    try {
+      // 1. アセット画像（Lv画像）を読み込み
+      final byteData = await rootBundle.load('assets/images/Lv$_level.png');
+
+      // 2. 一時ディレクトリにファイルとして保存
+      final tempDir = await getTemporaryDirectory();
+      final file = File('${tempDir.path}/Lv$_level.png');
+      await file.writeAsBytes(byteData.buffer.asUint8List());
+
+      // 3. 画像＋テキストを共有
+      await Share.shareXFiles(
+        [XFile(file.path)],
+        text: loc.shareMessage(_goal, _level, _day),
+      );
+   } catch (e) {
+     debugPrint('❌ 共有失敗: $e');
+     ScaffoldMessenger.of(context).showSnackBar(
+       const SnackBar(content: Text("共有に失敗しました")),
+      );
+    }
+  }
+
 
   void _setGoal() {
     setState(() {
@@ -252,9 +283,7 @@ class _BouzuHomePageState extends State<BouzuHomePage> {
                         ),
                         const SizedBox(height: 20),
                         ElevatedButton(
-                          onPressed: () {
-                            Share.share(loc.shareProgress(_goal, _level, _day));
-                          },
+                          onPressed: _shareImageWithText,
                           child: Text(loc.shareProgressButton),
                         ),
                       ] else ...[

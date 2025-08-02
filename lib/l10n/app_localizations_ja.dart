@@ -21,7 +21,7 @@ class AppLocalizationsJa extends AppLocalizations {
   String get calendarButton => 'カレンダーを見る';
 
   @override
-  String get shareButton => '進捗を共有する';
+  String get shareButton => 'SNSで共有する';
 
   @override
   String shareMessage(Object day, Object goal, Object level) {
