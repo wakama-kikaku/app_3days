@@ -5,7 +5,7 @@
   "continueButton": "Continued today!",
   "calendarButton": "View Calendar",
   "shareButton": "Share Progress",
-  "shareMessage": "Continuing goal \"{goal}\"! Lv.{level} - Day {day} #3DayMonk",
+  "shareMessage":  "Continuing goal「{goal}」Lv.{level} - Day {day} #3日坊主",
   "setGoalPlaceholder": "Enter your goal",
   "setGoalButton": "Set Goal",
   "resetButton": "Reset",

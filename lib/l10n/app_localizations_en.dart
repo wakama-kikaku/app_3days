@@ -25,7 +25,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String shareMessage(Object day, Object goal, Object level) {
-    return 'Continuing goal \"$goal\"! Lv.$level - Day $day #3DayMonk';
+    return 'Continuing goal「$goal」Lv.$level - Day $day #3日坊主';
   }
 
   @override

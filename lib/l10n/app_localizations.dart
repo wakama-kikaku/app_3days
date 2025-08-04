@@ -131,7 +131,7 @@ abstract class AppLocalizations {
   /// No description provided for @shareMessage.
   ///
   /// In en, this message translates to:
-  /// **'Continuing goal \"{goal}\"! Lv.{level} - Day {day} #3DayMonk'**
+  /// **'Continuing goal「{goal}」Lv.{level} - Day {day} #3日坊主'**
   String shareMessage(Object day, Object goal, Object level);
 
   /// No description provided for @setGoalPlaceholder.
