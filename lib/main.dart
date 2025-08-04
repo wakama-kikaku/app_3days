@@ -74,7 +74,7 @@ class _BouzuHomePageState extends State<BouzuHomePage> {
 
   void _initBannerAd() {
     _bannerAd = BannerAd(
-      adUnitId: 'ca-app-pub-3940256099942544/6300978111', // ← テスト用（本番は差し替え）
+      adUnitId: 'ca-app-pub-1647320860765397/6344123826', // ← 本番用バナーID
       request: const AdRequest(),
       size: AdSize.banner,
       listener: BannerAdListener(
