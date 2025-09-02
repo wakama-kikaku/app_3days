@@ -1,4 +1,4 @@
-package com.example.app_3days
+package com.wakama.app_3days
 
 import io.flutter.embedding.android.FlutterActivity
 
